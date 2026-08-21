@@ -33,7 +33,7 @@ CONFIG = {
     "cmd_interval":     0.1,    # Delay between non-query commands (seconds)
     "latency":          5.0,    # Fixed wait after Ready. before sending params (seconds)
     "final_wait":       1.0,    # Wait after last Ready. before closing laser (seconds)
-    "params_file":      "laser_protocol.csv",   # Relative to script directory
+    "params_file":      "laser_control_protocol_single_mega2560.csv",   # Relative to script directory
     "log_dir":          "logs",                 # Relative to script directory
 }
 
