@@ -48,25 +48,26 @@ For a **dual-channel (blue + red)** setup, repeat the steps above for the second
 
 ## Preparing the Python Environment
 
-Install a Conda-based environment (Miniforge / Miniconda / Anaconda), then run:
+Install a Conda-based environment (Miniforge / Miniconda / Anaconda), then install this repo as an editable package (this pulls in `pyserial` automatically and sets up the `laser-control-*` commands used below):
 
 ```bash
 conda create -n com python=3.12
 conda activate com
-pip install pyserial
+cd laser_control          # repo root, where pyproject.toml lives
+pip install -e .
 ```
 
 ---
 
 ## Scanning Serial Ports
 
-Run [com_scan.py](com_scan.py) to identify available serial ports.
+Run `laser-control-scan` to list all currently connected serial ports (device, description, manufacturer, VID/PID), so you can tell which COM port is which before editing a config file.
 
 ---
 
 ## Laser Power Calibration
 
-Manual, interactive calibration is done with PuTTY talking directly to the laser driver, plus an Arduino sketch that outputs steady/pulsed TTL signals for measurement. Use the single-channel tutorial in [laser_calibration_single](laser_calibration_single) or the dual-channel (blue/red) version in [laser_calibration_dual](laser_calibration_dual), depending on your setup.
+Manual, interactive calibration is done with PuTTY talking directly to the laser driver, plus an Arduino sketch that outputs steady/pulsed TTL signals for measurement. Use the single-channel sketch in [firmware/laser_calibration_single_mega2560](firmware/laser_calibration_single_mega2560) or the dual-channel (blue/red) version in [firmware/laser_calibration_dual_mega2560](firmware/laser_calibration_dual_mega2560), depending on your setup.
 
 ### Preparing the Laser with PuTTY
 
@@ -122,8 +123,8 @@ LASER:OUTPUT 0
 
 1. Open the calibration sketch in the Arduino IDE:
 
-   * Single channel: [laser_calibration_single/laser_calibration_single_mega2560/laser_calibration_mega2560.ino](laser_calibration_single/laser_calibration_single_mega2560/laser_calibration_mega2560.ino)
-   * Dual channel: [laser_calibration_dual/laser_calibration_dual_mega2560/laser_calibration_dual_mega2560.ino](laser_calibration_dual/laser_calibration_dual_mega2560/laser_calibration_dual_mega2560.ino)
+   * Single channel: [firmware/laser_calibration_single_mega2560/laser_calibration_single_mega2560.ino](firmware/laser_calibration_single_mega2560/laser_calibration_single_mega2560.ino)
+   * Dual channel: [firmware/laser_calibration_dual_mega2560/laser_calibration_dual_mega2560.ino](firmware/laser_calibration_dual_mega2560/laser_calibration_dual_mega2560.ino)
 
 2. In the **Tools** menu of the Arduino IDE:
 
@@ -164,18 +165,34 @@ For short pulse applications (duration < a few seconds), follow these guidelines
 
 ## Laser Pulse Delivery
 
-Once calibration is complete, use the automated `laser_control` scripts to run a full pulse-delivery experiment from a CSV parameter table, without manual PuTTY interaction.
+Once calibration is complete, use the `laser-control-single` / `laser-control-dual` commands (installed via `pip install -e .`, see [Preparing the Python Environment](#preparing-the-python-environment)) to run a full pulse-delivery experiment from a CSV parameter table, without manual PuTTY interaction.
 
-**Single channel** — [laser_control_single](laser_control_single):
+Serial ports, baud rates, and timing (`cmd_interval`, `latency`, `final_wait`) are **not** hardcoded — they live in a TOML config file:
 
-1. Modify parameters in [laser_control_single/laser_control_protocol_single_mega2560.csv](laser_control_single/laser_control_protocol_single_mega2560.csv)
-2. Modify parameters (COM ports, timing) in [laser_control_single/laser_control_single_mega2560.py](laser_control_single/laser_control_single_mega2560.py) if needed
-3. Upload [laser_control_single/laser_control_mega2560/laser_control_mega2560.ino](laser_control_single/laser_control_mega2560/laser_control_mega2560.ino) to the Arduino
-4. Run `laser_control_single_mega2560.py` in the `com` environment
+* [configs/laser_control_single_config.toml](configs/laser_control_single_config.toml)
+* [configs/laser_control_dual_config.toml](configs/laser_control_dual_config.toml)
 
-**Dual channel (blue + red)** — [laser_control_dual](laser_control_dual):
+Edit the relevant file to match your COM ports before running (use `laser-control-scan` to find them). To use a different config file entirely (e.g. a second bench setup), pass `--config path\to\other_config.toml`.
 
-1. Modify parameters in [laser_control_dual/laser_control_protocol_dual_mega2560.csv](laser_control_dual/laser_control_protocol_dual_mega2560.csv) — each row needs a `color` column (`blue` or `red`) selecting which channel and which laser driver that round uses; an extra column (e.g. `note`) can be added freely for your own reference (such as calibrated power), it is ignored by the script
-2. Modify parameters (COM ports for the Arduino board and both laser drivers, timing) in [laser_control_dual/laser_control_dual_mega2560.py](laser_control_dual/laser_control_dual_mega2560.py) if needed
-3. Upload [laser_control_dual/laser_control_dual_mega2560/laser_control_dual_mega2560.ino](laser_control_dual/laser_control_dual_mega2560/laser_control_dual_mega2560.ino) to the Arduino
-4. Run `laser_control_dual_mega2560.py` in the `com` environment
+**Single channel**:
+
+1. Modify parameters in a protocol CSV (e.g. the bundled [protocols/laser_control_protocol_single_mega2560.csv](protocols/laser_control_protocol_single_mega2560.csv), or your own copy) — `pulse_width`, `frequency`, `count`, `current` must all be positive integers; extra columns (e.g. `note`) are ignored and safe to add for your own reference
+2. Upload [firmware/laser_control_single_mega2560/laser_control_single_mega2560.ino](firmware/laser_control_single_mega2560/laser_control_single_mega2560.ino) to the Arduino
+3. Run:
+   ```bash
+   laser-control-single "path\to\your_protocol.csv"
+   ```
+   Omitting the path falls back to the bundled default protocol file, after a `[y/N]` confirmation prompt.
+
+**Dual channel (blue + red)**:
+
+1. Modify parameters in a protocol CSV (e.g. the bundled [protocols/laser_control_protocol_dual_mega2560.csv](protocols/laser_control_protocol_dual_mega2560.csv)) — same required columns as above, plus a `color` column (`blue` or `red`) selecting which channel and which laser driver that round uses
+2. Upload [firmware/laser_control_dual_mega2560/laser_control_dual_mega2560.ino](firmware/laser_control_dual_mega2560/laser_control_dual_mega2560.ino) to the Arduino
+3. Run:
+   ```bash
+   laser-control-dual "path\to\your_protocol.csv"
+   ```
+
+Every row of the protocol file is validated (positive integers, valid `color` for the dual version) **before** any serial port is opened — if something is wrong, all problem rows are reported together so you can fix the CSV in one pass.
+
+Logs for each run are written to `logs/<timestamp>/` under the directory you ran the command from (not the repo).

@@ -1,0 +1,20 @@
+[project]
+name = "laser-control"
+version = "0.1.0"
+description = "Command-line tools for driving Arroyo 4220-DR laser sources and an Arduino Mega 2560 pulse controller (single- and dual-channel)."
+requires-python = ">=3.11"
+dependencies = [
+    "pyserial",
+]
+
+[project.scripts]
+laser-control-single = "laser_control.single_mega2560:main"
+laser-control-dual   = "laser_control.dual_mega2560:main"
+laser-control-scan   = "laser_control.scan:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

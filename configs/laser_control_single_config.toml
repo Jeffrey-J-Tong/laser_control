@@ -1,0 +1,18 @@
+# Serial port / timing configuration for `laser-control-single`.
+# Edit the values below to match your hardware; keys left out fall back to
+# the built-in defaults in src/laser_control/single_mega2560.py.
+
+laser_port       = "COM3"   # Arroyo 4220-DR laser driver
+arduino_port     = "COM4"   # Arduino Mega 2560 running the single-channel firmware
+
+laser_baudrate   = 38400
+arduino_baudrate = 115200
+
+timeout          = 5.0      # Serial read timeout (seconds)
+cmd_interval     = 0.1      # Delay between non-query laser commands (seconds)
+latency          = 5.0      # Fixed wait after Arduino "Ready." before sending the next round's params (seconds)
+final_wait       = 1.0      # Wait after the last "Ready." before closing the laser output (seconds)
+
+# Relative to the current working directory when the command is run
+# (not to this config file, and not to the installed package).
+log_dir          = "logs"

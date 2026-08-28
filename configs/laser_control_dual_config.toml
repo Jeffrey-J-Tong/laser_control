@@ -1,0 +1,19 @@
+# Serial port / timing configuration for `laser-control-dual`.
+# Edit the values below to match your hardware; keys left out fall back to
+# the built-in defaults in src/laser_control/dual_mega2560.py.
+
+blue_laser_port  = "COM5"   # Arroyo 4220-DR laser driver (blue channel)
+red_laser_port   = "COM6"   # Arroyo 4220-DR laser driver (red channel)
+arduino_port     = "COM4"   # Arduino Mega 2560 running the dual-channel firmware (single board, both channels)
+
+laser_baudrate   = 38400
+arduino_baudrate = 115200
+
+timeout          = 5.0      # Serial read timeout (seconds)
+cmd_interval     = 0.1      # Delay between non-query laser commands (seconds)
+latency          = 20.0     # Fixed wait after Arduino "Ready." before sending the next round's params (seconds)
+final_wait       = 1.0      # Wait after the last "Ready." before closing the laser outputs (seconds)
+
+# Relative to the current working directory when the command is run
+# (not to this config file, and not to the installed package).
+log_dir          = "logs"

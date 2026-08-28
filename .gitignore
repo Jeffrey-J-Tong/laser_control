@@ -1,4 +1,15 @@
 logs
 demand.txt
-todo*
 sync.ffs_db
+
+# Python packaging / build artifacts (created by `pip install -e .`, etc.)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments, in case one gets created inside the repo
+.venv/
+venv/
