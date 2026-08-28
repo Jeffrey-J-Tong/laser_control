@@ -1,3 +1,11 @@
-color,pulse_width,frequency,count,current,note
-blue,10,2,20,500,1 mW
-red,20,5,20,300,5 mW
+color,pulse_width,frequency,count,current,note_power,note_wavelength
+blue,10,1,100,500,1 mW,473 nm
+blue,10,1,100,300,3 mW,473 nm
+blue,10,1,100,300,5 mW,473 nm
+blue,10,1,100,300,10 mW,473 nm
+blue,10,1,100,300,20 mW,473 nm
+red,10,1,100,500,1 mW,638 nm
+red,10,1,100,300,3 mW,638 nm
+red,10,1,100,300,5 mW,638 nm
+red,10,1,100,300,10 mW,638 nm
+red,10,1,100,300,20 mW,638 nm

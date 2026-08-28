@@ -40,12 +40,12 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 CONFIG = {
     "blue_laser_port":  "COM5",
     "red_laser_port":   "COM6",
-    "arduino_port":     "COM3",
+    "arduino_port":     "COM4",
     "laser_baudrate":   38400,
     "arduino_baudrate": 115200,
     "timeout":          5.0,    # Serial read timeout (seconds)
     "cmd_interval":     0.1,    # Delay between non-query commands (seconds)
-    "latency":          5.0,    # Fixed wait after Ready. before sending params (seconds)
+    "latency":          20.0,    # Fixed wait after Ready. before sending params (seconds)
     "final_wait":       1.0,    # Wait after last Ready. before closing lasers (seconds)
     "params_file":      "laser_control_protocol_dual_mega2560.csv",   # Relative to script directory
     "log_dir":          "logs",                         # Relative to script directory
