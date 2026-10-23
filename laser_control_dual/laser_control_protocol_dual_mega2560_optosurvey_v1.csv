@@ -1,0 +1,5 @@
+color,pulse_width,frequency,count,current,note_power,note_wavelength
+blue,10,1,100,550,10 mW,473 nm
+blue,10,1,100,680,20 mW,473 nm
+red,10,1,100,755,10 mW,638 nm
+red,10,1,100,980,20 mW,638 nm
