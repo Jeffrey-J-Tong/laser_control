@@ -1,6 +1,5 @@
 logs
 demand.txt
-sync.ffs_db
 
 # Python packaging / build artifacts (created by `pip install -e .`, etc.)
 __pycache__/
